@@ -28,9 +28,11 @@ elapsed_timer(void *timer_data)
     if (timer_data == NULL) {
         return 0.0;
     }
+
+    double elapsed;
 #ifndef __MACH__
-    struct timerspec start = *timer_data;
-    struct timerspec now;
+    struct timespec start = *(struct timespec *)timer_data;
+    struct timespec now;
     clock_gettime(CLOCK_REALTIME, &now);
 
     if (now.tv_nsec < start.tv_nsec) {
@@ -46,7 +48,6 @@ elapsed_timer(void *timer_data)
     static mach_timebase_info_data_t sTimebaseInfo;
     uint64_t start = *(uint64_t *)timer_data;
     uint64_t now = mach_absolute_time();
-    double elapsed;
 
     elapsed = (double)(now - start);
     elapsed /= (double)(1 * 1000 * 1000 * 1000);
